@@ -146,6 +146,34 @@ SECRET_PATTERNS = [
 └─────────────────────────────────────────────────────────────┘
 ```
 
+## 🚀 Deployment
+
+Since the scanning process can take several minutes (cloning repos, scanning history), a split deployment is recommended:
+
+### Frontend → Vercel
+
+1. Push your code to GitHub
+2. Import the `frontend` folder to Vercel
+3. Add environment variable:
+   - `VITE_API_URL` = `https://your-backend-url.railway.app`
+4. Deploy!
+
+### Backend → Railway (Recommended)
+
+1. Create a new Railway project
+2. Connect your GitHub repo, select `backend` folder
+3. Railway auto-detects Python and uses the `Procfile`
+4. Deploy!
+
+**Alternative backend hosts:** Render, Fly.io, DigitalOcean App Platform
+
+### Environment Variables
+
+| Variable | Location | Description |
+|----------|----------|-------------|
+| `VITE_API_URL` | Frontend (Vercel) | Backend API URL |
+| `PORT` | Backend (auto-set) | Server port (set automatically by host) |
+
 ## 📝 License
 
 MIT License - Feel free to use, modify, and distribute.

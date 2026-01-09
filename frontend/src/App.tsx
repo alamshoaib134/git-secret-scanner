@@ -53,6 +53,9 @@ const severityIcons: Record<string, string> = {
   low: '⚪'
 }
 
+// API base URL - uses environment variable in production, relative path in development
+const API_BASE = import.meta.env.VITE_API_URL || ''
+
 // Generate GitHub/GitLab link to specific file and line
 const getRepoFileLink = (repoUrl: string, filePath: string, lineNumber: number, commitHash: string): string => {
   // Use commit hash for historical, or default branch for HEAD
@@ -85,7 +88,7 @@ function App() {
 
   const pollStatus = useCallback(async (id: string) => {
     try {
-      const response = await fetch(`/api/scan/${id}`)
+      const response = await fetch(`${API_BASE}/api/scan/${id}`)
       if (!response.ok) throw new Error('Failed to get scan status')
       
       const data: ScanStatus = await response.json()
@@ -121,7 +124,7 @@ function App() {
     setScanning(true)
 
     try {
-      const response = await fetch('/api/scan', {
+      const response = await fetch(`${API_BASE}/api/scan`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ git_url: gitUrl })
