@@ -134,11 +134,20 @@ git-secret-scanner/
 │   ├── app.py              # FastAPI server
 │   ├── requirements.txt
 │   └── Procfile            # Railway deployment
+├── architecture/           # Design documents
+│   ├── HLD.md              # High-Level Design
+│   └── LLD.md              # Low-Level Design
 ├── screenshots/            # Demo screenshots
 ├── package.json
 ├── vercel.json
 └── README.md
 ```
+
+## 📐 Architecture
+
+For detailed technical documentation, see:
+- **[High-Level Design (HLD)](architecture/HLD.md)** - System overview, data flows, deployment
+- **[Low-Level Design (LLD)](architecture/LLD.md)** - Module details, algorithms, API specs
 
 ## 🛡️ Security Notes
 
