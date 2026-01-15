@@ -8,27 +8,27 @@
 
 ```mermaid
 flowchart TB
-    subgraph UI["🖥️ User Interface (React + TypeScript)"]
-        URL[URL Input]
-        MODE[Mode Toggle<br/>Full / Lite]
-        RESULTS[Results Dashboard]
+    subgraph UI["User Interface - React TypeScript"]
+        URL["URL Input"]
+        MODE["Mode Toggle - Full or Lite"]
+        RESULTS["Results Dashboard"]
     end
 
-    subgraph FULL["🔥 FULL MODE (Python Backend)"]
-        CLONE[Clone Repository]
-        BRANCHES[Scan All Branches]
-        COMMITS[500 Commit History]
-        DELETED[Deleted File Detection]
-        PATTERNS1[50+ Secret Patterns]
-        API[FastAPI Server<br/>Port 8000]
+    subgraph FULL["FULL MODE - Python Backend"]
+        CLONE["Clone Repository"]
+        BRANCHES["Scan All Branches"]
+        COMMITS["500 Commit History"]
+        DELETED["Deleted File Detection"]
+        PATTERNS1["50+ Secret Patterns"]
+        API["FastAPI Server Port 8000"]
     end
 
-    subgraph LITE["⚡ LITE MODE (Browser Only)"]
-        GHAPI[GitHub REST API]
-        TREES[Fetch File Trees]
-        DIFFS[20 Commit Diffs]
-        PATTERNS2[40+ Secret Patterns]
-        SCANNER[scanner.ts<br/>Client-side JS]
+    subgraph LITE["LITE MODE - Browser Only"]
+        GHAPI["GitHub REST API"]
+        TREES["Fetch File Trees"]
+        DIFFS["20 Commit Diffs"]
+        PATTERNS2["40+ Secret Patterns"]
+        SCANNER["scanner.ts Client-side JS"]
     end
 
     UI --> FULL
@@ -46,16 +46,16 @@ flowchart TB
 ```mermaid
 graph LR
     subgraph Frontend["Frontend Layer"]
-        APP[App.tsx<br/>UI Logic & State]
-        CSS[App.css<br/>Cyberpunk Theme]
-        SCAN[scanner.ts<br/>Lite Mode Logic]
+        APP["App.tsx - UI Logic and State"]
+        CSS["App.css - Cyberpunk Theme"]
+        SCAN["scanner.ts - Lite Mode Logic"]
     end
 
     subgraph Tech["Technologies"]
-        REACT[React 18]
-        TS[TypeScript]
-        VITE[Vite]
-        MOTION[Framer Motion]
+        REACT["React 18"]
+        TS["TypeScript"]
+        VITE["Vite"]
+        MOTION["Framer Motion"]
     end
 
     APP --> REACT
@@ -69,16 +69,16 @@ graph LR
 ```mermaid
 graph TB
     subgraph Backend["Backend Layer - FastAPI Server"]
-        E1[POST /api/scan<br/>Start repository scan]
-        E2[GET /api/scan/id<br/>Get scan status & results]
-        E3[GET /api/health<br/>Health check]
+        E1["POST /api/scan - Start repository scan"]
+        E2["GET /api/scan/id - Get scan status and results"]
+        E3["GET /api/health - Health check"]
     end
 
     subgraph Tech["Technologies"]
-        PY[Python 3.11]
-        FAST[FastAPI]
-        UV[Uvicorn]
-        GIT[Git CLI]
+        PY["Python 3.11"]
+        FAST["FastAPI"]
+        UV["Uvicorn"]
+        GIT["Git CLI"]
     end
 
     E1 --> PY
@@ -95,25 +95,25 @@ graph TB
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant F as Frontend<br/>(React)
-    participant B as Backend<br/>(FastAPI)
-    participant G as Git Server<br/>(GitHub)
+    participant F as Frontend React
+    participant B as Backend FastAPI
+    participant G as Git Server
 
     U->>F: Enter Repository URL
-    F->>B: POST /api/scan {git_url}
-    B-->>F: {scan_id, status: "scanning"}
+    F->>B: POST /api/scan with git_url
+    B-->>F: Return scan_id and status scanning
     
     B->>G: git clone --mirror
     G-->>B: Repository data
     
     loop Every 2 seconds
-        F->>B: GET /api/scan/{id}
-        B-->>F: {progress, message}
+        F->>B: GET /api/scan/id
+        B-->>F: Return progress and message
     end
     
-    Note over B: Scan commits<br/>Pattern matching<br/>Entropy calculation
+    Note over B: Scan commits and pattern matching
     
-    B-->>F: {status: "completed", findings}
+    B-->>F: Return completed status with findings
     F->>U: Display Results
 ```
 
@@ -122,29 +122,29 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant F as Frontend<br/>(React + scanner.ts)
+    participant F as Frontend with scanner.ts
     participant G as GitHub API
 
     U->>F: Enter GitHub URL
     
-    F->>G: GET /repos/{owner}/{repo}/branches
+    F->>G: GET /repos/owner/repo/branches
     G-->>F: Branch list
     
-    F->>G: GET /git/trees/{branch}?recursive=1
+    F->>G: GET /git/trees/branch recursive
     G-->>F: File tree
     
-    loop For each file (max 100)
-        F->>G: GET /git/blobs/{sha}
+    loop For each file max 100
+        F->>G: GET /git/blobs/sha
         G-->>F: File content
-        Note over F: Pattern matching<br/>Entropy calculation
+        Note over F: Pattern matching
     end
     
-    F->>G: GET /commits?sha={branch}
+    F->>G: GET /commits
     G-->>F: Commit list
     
-    loop For each commit (max 20)
-        F->>G: GET /commits/{sha}
-        G-->>F: Commit diff/patch
+    loop For each commit max 20
+        F->>G: GET /commits/sha
+        G-->>F: Commit diff patch
         Note over F: Scan added lines
     end
     
@@ -157,26 +157,23 @@ sequenceDiagram
 
 ```mermaid
 flowchart TB
-    subgraph Internet["🌐 Internet"]
-        USERS[Users]
+    subgraph Internet["Internet"]
+        USERS["Users"]
     end
 
-    subgraph Vercel["Vercel (Frontend Host)"]
-        REACT_APP[React App<br/>Static Files]
-        ENV1[VITE_BACKEND_URL]
+    subgraph Vercel["Vercel - Frontend Host"]
+        REACT_APP["React App Static Files"]
+        ENV1["VITE_BACKEND_URL env var"]
     end
 
-    subgraph Railway["Railway (Backend Host)"]
-        FASTAPI[FastAPI<br/>Python Backend]
-        ENV2[PORT auto-set]
+    subgraph Railway["Railway - Backend Host"]
+        FASTAPI["FastAPI Python Backend"]
+        ENV2["PORT auto-set"]
     end
 
     USERS -->|HTTPS| Vercel
     USERS -->|HTTPS| Railway
     Vercel -->|API Calls| Railway
-
-    style Vercel fill:#000,stroke:#00d4ff
-    style Railway fill:#000,stroke:#00ff88
 ```
 
 ---
@@ -185,22 +182,22 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-    subgraph L1["Layer 1: Input Validation"]
-        V1[URL Format Validation]
-        V2[Public Repo Check]
-        V3[Rate Limiting]
+    subgraph L1["Layer 1 - Input Validation"]
+        V1["URL Format Validation"]
+        V2["Public Repo Check"]
+        V3["Rate Limiting"]
     end
 
-    subgraph L2["Layer 2: Data Processing"]
-        P1[Temp Directory<br/>Auto-cleanup]
-        P2[In-memory Storage<br/>No persistence]
-        P3[Subprocess Sandboxing]
+    subgraph L2["Layer 2 - Data Processing"]
+        P1["Temp Directory Auto-cleanup"]
+        P2["In-memory Storage No persistence"]
+        P3["Subprocess Sandboxing"]
     end
 
-    subgraph L3["Layer 3: Output Protection"]
-        O1[Secret Masking<br/>AKIA**** format]
-        O2[User-controlled Reveal]
-        O3[CORS Configuration]
+    subgraph L3["Layer 3 - Output Protection"]
+        O1["Secret Masking AKIA format"]
+        O2["User-controlled Reveal"]
+        O3["CORS Configuration"]
     end
 
     L1 --> L2 --> L3
@@ -212,7 +209,7 @@ flowchart TB
 
 ```mermaid
 mindmap
-  root((Git Secret<br/>Scanner))
+  root((Git Secret Scanner))
     Frontend
       React 18
       TypeScript
@@ -239,20 +236,20 @@ mindmap
 ```mermaid
 graph TB
     subgraph Client["Client Browser"]
-        UI[React UI]
-        SCANNER[scanner.ts]
+        UI["React UI"]
+        SCANNER["scanner.ts"]
     end
 
     subgraph Server["Backend Server"]
-        API[FastAPI]
-        ENGINE[Scan Engine]
-        PATTERNS[Pattern Matcher]
+        API["FastAPI"]
+        ENGINE["Scan Engine"]
+        PATTERNS["Pattern Matcher"]
     end
 
     subgraph External["External Services"]
-        GITHUB[GitHub API]
-        GITLAB[GitLab]
-        BITBUCKET[Bitbucket]
+        GITHUB["GitHub API"]
+        GITLAB["GitLab"]
+        BITBUCKET["Bitbucket"]
     end
 
     UI -->|Full Mode| API
@@ -271,18 +268,18 @@ graph TB
 
 ```mermaid
 flowchart LR
-    subgraph Current["Current (MVP)"]
-        S1[Single Instance]
-        M1[In-memory Storage]
-        SYNC[Synchronous]
+    subgraph Current["Current MVP"]
+        S1["Single Instance"]
+        M1["In-memory Storage"]
+        SYNC["Synchronous"]
     end
 
     subgraph Future["Future Scaling"]
-        W1[Worker 1]
-        W2[Worker 2]
-        W3[Worker N]
-        REDIS[(Redis Queue)]
-        PG[(PostgreSQL)]
+        W1["Worker 1"]
+        W2["Worker 2"]
+        W3["Worker N"]
+        REDIS[("Redis Queue")]
+        PG[("PostgreSQL")]
     end
 
     Current -->|Scale| Future
@@ -296,22 +293,19 @@ flowchart LR
 
 ```mermaid
 graph LR
-    subgraph Full["🔥 Full Mode"]
-        F1[500 Commits]
-        F2[Deleted Files ✅]
-        F3[All Branches]
-        F4[Any Git URL]
-        F5[Backend Required]
+    subgraph Full["Full Mode"]
+        F1["500 Commits"]
+        F2["Deleted Files YES"]
+        F3["All Branches"]
+        F4["Any Git URL"]
+        F5["Backend Required"]
     end
 
-    subgraph Lite["⚡ Lite Mode"]
-        L1[20 Commits]
-        L2[Deleted Files ❌]
-        L3[Default Branch]
-        L4[GitHub Only]
-        L5[No Backend]
+    subgraph Lite["Lite Mode"]
+        L1["20 Commits"]
+        L2["Deleted Files NO"]
+        L3["Default Branch"]
+        L4["GitHub Only"]
+        L5["No Backend"]
     end
-
-    style Full fill:#ff6b35,stroke:#fff
-    style Lite fill:#00d4ff,stroke:#fff
 ```

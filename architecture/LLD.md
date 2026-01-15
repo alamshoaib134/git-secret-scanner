@@ -9,15 +9,15 @@
 ```mermaid
 flowchart TB
     subgraph Frontend["Frontend Modules"]
-        APP[App.tsx<br/>Main Component]
-        UI[UI Components]
-        SCANNER[scanner.ts<br/>Lite Mode]
+        APP["App.tsx - Main Component"]
+        UI["UI Components"]
+        SCANNER["scanner.ts - Lite Mode"]
     end
 
     subgraph Backend["Backend Modules"]
-        MAIN[app.py<br/>Main Server]
-        ENGINE[Scanner Engine]
-        ROUTES[API Routes]
+        MAIN["app.py - Main Server"]
+        ENGINE["Scanner Engine"]
+        ROUTES["API Routes"]
     end
 
     APP --> UI
@@ -34,24 +34,19 @@ flowchart TB
 stateDiagram-v2
     [*] --> Idle
     
-    Idle --> Scanning: Click "Scan"
+    Idle --> Scanning: Click Scan
     Scanning --> Polling: Full Mode
     Scanning --> Processing: Lite Mode
     
     Polling --> Polling: Every 2s
-    Polling --> Completed: status=completed
-    Polling --> Error: status=error
+    Polling --> Completed: Done
+    Polling --> Error: Failed
     
     Processing --> Completed: Scan done
     Processing --> Error: API error
     
     Completed --> Idle: New scan
     Error --> Idle: Retry
-
-    note right of Scanning
-        progress: 0-100%
-        progressMessage: "..."
-    end note
 ```
 
 ### State Interface
@@ -78,34 +73,34 @@ interface AppState {
 
 ```mermaid
 graph TD
-    APP[App.tsx]
+    APP["App.tsx"]
     
-    APP --> HEADER[Header]
-    APP --> CARD[ScannerCard]
-    APP --> PROGRESS[ProgressIndicator]
-    APP --> RESULTS[ResultsPanel]
-    APP --> FOOTER[Footer]
+    APP --> HEADER["Header"]
+    APP --> CARD["ScannerCard"]
+    APP --> PROGRESS["ProgressIndicator"]
+    APP --> RESULTS["ResultsPanel"]
+    APP --> FOOTER["Footer"]
     
-    HEADER --> LOGO[Logo]
-    HEADER --> TITLE[Title]
+    HEADER --> LOGO["Logo"]
+    HEADER --> TITLE["Title"]
     
-    CARD --> MODE[ModeSelector]
-    CARD --> INPUT[URLInput]
-    CARD --> TOKEN[TokenInput]
-    CARD --> BADGES[FeatureBadges]
+    CARD --> MODE["ModeSelector"]
+    CARD --> INPUT["URLInput"]
+    CARD --> TOKEN["TokenInput"]
+    CARD --> BADGES["FeatureBadges"]
     
-    MODE --> FULL_BTN[FullModeButton]
-    MODE --> LITE_BTN[LiteModeButton]
+    MODE --> FULL_BTN["FullModeButton"]
+    MODE --> LITE_BTN["LiteModeButton"]
     
-    RESULTS --> SUMMARY[SummaryCards]
-    RESULTS --> FILTER[FilterBar]
-    RESULTS --> LIST[FindingsList]
+    RESULTS --> SUMMARY["SummaryCards"]
+    RESULTS --> FILTER["FilterBar"]
+    RESULTS --> LIST["FindingsList"]
     
-    LIST --> FINDING[FindingCard]
-    FINDING --> SEVERITY[SeverityBadge]
-    FINDING --> LINK[FileLink]
-    FINDING --> SECRET[SecretDisplay]
-    FINDING --> COMMIT[CommitInfo]
+    LIST --> FINDING["FindingCard"]
+    FINDING --> SEVERITY["SeverityBadge"]
+    FINDING --> LINK["FileLink"]
+    FINDING --> SECRET["SecretDisplay"]
+    FINDING --> COMMIT["CommitInfo"]
 ```
 
 ---
@@ -114,7 +109,7 @@ graph TD
 
 ```mermaid
 mindmap
-  root((Secret<br/>Patterns))
+  root((Secret Patterns))
     Cloud Providers
       AWS Access Key
       AWS Secret Key
@@ -161,27 +156,27 @@ interface SecretPattern {
 
 ```mermaid
 flowchart TD
-    START([scanRepository]) --> PARSE[parseGitHubUrl]
-    PARSE --> BRANCHES[getBranches<br/>max 10]
+    START(["scanRepository"]) --> PARSE["parseGitHubUrl"]
+    PARSE --> BRANCHES["getBranches - max 10"]
     
-    BRANCHES --> LOOP1{For each branch}
-    LOOP1 --> TREE[getFileTree]
-    TREE --> FILTER[Filter by extension<br/>.js, .py, .env, etc.]
+    BRANCHES --> LOOP1{"For each branch"}
+    LOOP1 --> TREE["getFileTree"]
+    TREE --> FILTER["Filter by extension"]
     
-    FILTER --> LOOP2{For each file<br/>max 100}
-    LOOP2 --> CONTENT[getFileContent]
-    CONTENT --> SCAN1[scanContent<br/>Pattern matching]
+    FILTER --> LOOP2{"For each file - max 100"}
+    LOOP2 --> CONTENT["getFileContent"]
+    CONTENT --> SCAN1["scanContent"]
     SCAN1 --> LOOP2
     
-    LOOP2 --> COMMITS[getCommits<br/>max 30]
-    COMMITS --> LOOP3{For each commit<br/>max 20}
-    LOOP3 --> DIFF[getCommitDiff]
-    DIFF --> ADDED[Extract + lines]
-    ADDED --> SCAN2[scanContent]
+    LOOP2 --> COMMITS["getCommits - max 30"]
+    COMMITS --> LOOP3{"For each commit - max 20"}
+    LOOP3 --> DIFF["getCommitDiff"]
+    DIFF --> ADDED["Extract added lines"]
+    ADDED --> SCAN2["scanContent"]
     SCAN2 --> LOOP3
     
-    LOOP3 --> DEDUP[Deduplicate<br/>by hash]
-    DEDUP --> RETURN([Return Results])
+    LOOP3 --> DEDUP["Deduplicate by hash"]
+    DEDUP --> RETURN(["Return Results"])
 ```
 
 ---
@@ -190,34 +185,34 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    START([perform_scan]) --> TEMP[Create temp directory]
-    TEMP --> CLONE[git clone --mirror]
-    CLONE --> CONVERT[Convert to regular repo]
-    CONVERT --> GETBRANCH[Get all branches]
+    START(["perform_scan"]) --> TEMP["Create temp directory"]
+    TEMP --> CLONE["git clone --mirror"]
+    CLONE --> CONVERT["Convert to regular repo"]
+    CONVERT --> GETBRANCH["Get all branches"]
     
-    GETBRANCH --> LOOP1{For each branch}
-    LOOP1 --> CHECKOUT[git checkout branch]
-    CHECKOUT --> GETCOMMITS[Get commits<br/>max 500]
+    GETBRANCH --> LOOP1{"For each branch"}
+    LOOP1 --> CHECKOUT["git checkout branch"]
+    CHECKOUT --> GETCOMMITS["Get commits - max 500"]
     
-    GETCOMMITS --> LOOP2{For each commit}
-    LOOP2 --> SHOW[git show --diff-filter=AM]
-    SHOW --> EXTRACT[Extract added lines]
+    GETCOMMITS --> LOOP2{"For each commit"}
+    LOOP2 --> SHOW["git show diff"]
+    SHOW --> EXTRACT["Extract added lines"]
     
-    EXTRACT --> LOOP3{For each pattern}
-    LOOP3 --> MATCH[re.finditer]
-    MATCH --> ENTROPY[Calculate entropy]
-    ENTROPY --> FINDING[Create SecretFinding]
+    EXTRACT --> LOOP3{"For each pattern"}
+    LOOP3 --> MATCH["regex finditer"]
+    MATCH --> ENTROPY["Calculate entropy"]
+    ENTROPY --> FINDING["Create SecretFinding"]
     FINDING --> LOOP3
     
     LOOP3 --> LOOP2
-    LOOP2 --> FILES[Scan current files]
+    LOOP2 --> FILES["Scan current files"]
     FILES --> LOOP1
     
-    LOOP1 --> DEDUP[Deduplicate findings]
-    DEDUP --> SORT[Sort by severity]
-    SORT --> UPDATE[Update scan_results]
-    UPDATE --> CLEANUP[Cleanup temp dir]
-    CLEANUP --> END([Done])
+    LOOP1 --> DEDUP["Deduplicate findings"]
+    DEDUP --> SORT["Sort by severity"]
+    SORT --> UPDATE["Update scan_results"]
+    UPDATE --> CLEANUP["Cleanup temp dir"]
+    CLEANUP --> END(["Done"])
 ```
 
 ---
@@ -229,23 +224,17 @@ sequenceDiagram
     participant C as Client
     participant S as Server
 
-    rect rgb(50, 50, 50)
-        Note over C,S: POST /api/scan
-        C->>S: {"git_url": "https://github.com/user/repo"}
-        S-->>C: {"scan_id": "uuid", "status": "scanning"}
-    end
+    Note over C,S: POST /api/scan
+    C->>S: git_url in request body
+    S-->>C: scan_id and status
 
-    rect rgb(50, 50, 50)
-        Note over C,S: GET /api/scan/{scan_id} (polling)
-        C->>S: Request status
-        S-->>C: {"status": "scanning", "progress": 45}
-    end
+    Note over C,S: GET /api/scan/id - polling
+    C->>S: Request status
+    S-->>C: progress percentage
 
-    rect rgb(50, 50, 50)
-        Note over C,S: GET /api/scan/{scan_id} (completed)
-        C->>S: Request status
-        S-->>C: {"status": "completed", "findings": [...]}
-    end
+    Note over C,S: GET /api/scan/id - completed
+    C->>S: Request status
+    S-->>C: findings array
 ```
 
 ### Response Schema
@@ -295,16 +284,10 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    INPUT[Input String] --> COUNT[Count char<br/>frequency]
-    COUNT --> PROB[Calculate<br/>probability]
-    PROB --> SHANNON[Shannon Formula<br/>H = -Σ p×log₂p]
-    SHANNON --> OUTPUT[Entropy Score]
-    
-    subgraph Examples
-        E1["password123<br/>→ 3.18 LOW"]
-        E2["aK9$mP2@xL4!<br/>→ 4.58 HIGH"]
-        E3["AKIAIOSFODNN<br/>→ 3.25 MED"]
-    end
+    INPUT["Input String"] --> COUNT["Count char frequency"]
+    COUNT --> PROB["Calculate probability"]
+    PROB --> SHANNON["Shannon Formula"]
+    SHANNON --> OUTPUT["Entropy Score"]
 ```
 
 ### Formula
@@ -316,6 +299,11 @@ Where:
 - H(X) = entropy of string X
 - P(xᵢ) = probability of character xᵢ
 - Higher entropy (>4.0) = more random = likely secret
+
+Examples:
+- "password123"  → entropy ≈ 3.18 (LOW)
+- "aK9$mP2@xL4!" → entropy ≈ 4.58 (HIGH)
+- "AKIAIOSFODNN" → entropy ≈ 3.25 (MEDIUM)
 ```
 
 ---
@@ -324,20 +312,17 @@ Where:
 
 ```mermaid
 graph TD
-    subgraph Scanned["✅ Scanned Extensions"]
-        CONFIG[".env, .json, .yaml, .yml<br/>.toml, .ini, .cfg, .conf"]
-        CODE[".js, .jsx, .ts, .tsx<br/>.py, .rb, .php, .java<br/>.go, .rs, .sh"]
-        DATA[".sql, .xml, .md, .txt<br/>.properties"]
+    subgraph Scanned["Scanned Extensions"]
+        CONFIG["Config: .env .json .yaml .yml .toml .ini"]
+        CODE["Code: .js .ts .py .rb .php .java .go"]
+        DATA["Data: .sql .xml .md .txt .properties"]
     end
 
-    subgraph Excluded["❌ Excluded"]
-        BINARY[".png, .jpg, .gif<br/>.pdf, .zip, .exe"]
-        DEPS["node_modules/<br/>venv/, vendor/"]
-        LARGE["Files > 1MB"]
+    subgraph Excluded["Excluded"]
+        BINARY["Binary: .png .jpg .gif .pdf .zip .exe"]
+        DEPS["Deps: node_modules venv vendor"]
+        LARGE["Large: Files over 1MB"]
     end
-
-    style Scanned fill:#00ff88,stroke:#fff,color:#000
-    style Excluded fill:#ff4444,stroke:#fff,color:#fff
 ```
 
 ---
@@ -347,17 +332,17 @@ graph TD
 ```mermaid
 flowchart TD
     subgraph Frontend["Frontend Errors"]
-        FE1[Invalid URL] -->|Regex check| FEH1[Show validation error]
-        FE2[Network failure] -->|fetch catch| FEH2[Show retry button]
-        FE3[Rate limited] -->|403 + header| FEH3[Suggest add token]
-        FE4[Private repo] -->|404| FEH4[Show access error]
+        FE1["Invalid URL"] --> FEH1["Show validation error"]
+        FE2["Network failure"] --> FEH2["Show retry button"]
+        FE3["Rate limited"] --> FEH3["Suggest add token"]
+        FE4["Private repo"] --> FEH4["Show access error"]
     end
 
     subgraph Backend["Backend Errors"]
-        BE1[Clone failed] -->|CalledProcessError| BEH1[Set status=error]
-        BE2[Invalid regex] -->|re.error| BEH2[Skip pattern]
-        BE3[File read error] -->|IOError| BEH3[Skip file]
-        BE4[Git timeout] -->|Timeout| BEH4[Skip operation]
+        BE1["Clone failed"] --> BEH1["Set status error"]
+        BE2["Invalid regex"] --> BEH2["Skip pattern"]
+        BE3["File read error"] --> BEH3["Skip file"]
+        BE4["Git timeout"] --> BEH4["Skip operation"]
     end
 ```
 
@@ -367,11 +352,11 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    FINDING[Finding] --> EXTRACT[Extract fields:<br/>file + line + type + preview]
-    EXTRACT --> HASH[MD5 Hash]
-    HASH --> CHECK{In Set?}
-    CHECK -->|No| ADD[Add to Set<br/>Keep finding]
-    CHECK -->|Yes| SKIP[Discard duplicate]
+    FINDING["Finding"] --> EXTRACT["Extract fields"]
+    EXTRACT --> HASH["MD5 Hash"]
+    HASH --> CHECK{"In Set?"}
+    CHECK -->|No| ADD["Add to Set - Keep"]
+    CHECK -->|Yes| SKIP["Discard duplicate"]
 ```
 
 ---
@@ -388,28 +373,28 @@ pie title Secret Severity Distribution
 
 ```mermaid
 graph LR
-    subgraph Critical["🔴 Critical"]
-        C1[AWS Keys]
-        C2[Private Keys]
-        C3[Database URIs]
+    subgraph Critical["Critical"]
+        C1["AWS Keys"]
+        C2["Private Keys"]
+        C3["Database URIs"]
     end
 
-    subgraph High["🟠 High"]
-        H1[API Tokens]
-        H2[OAuth Secrets]
-        H3[Webhook URLs]
+    subgraph High["High"]
+        H1["API Tokens"]
+        H2["OAuth Secrets"]
+        H3["Webhook URLs"]
     end
 
-    subgraph Medium["🟡 Medium"]
-        M1[Publishable Keys]
-        M2[Client IDs]
-        M3[Generic Secrets]
+    subgraph Medium["Medium"]
+        M1["Publishable Keys"]
+        M2["Client IDs"]
+        M3["Generic Secrets"]
     end
 
-    subgraph Low["🟢 Low"]
-        L1[Test Tokens]
-        L2[Example Keys]
-        L3[Low Entropy]
+    subgraph Low["Low"]
+        L1["Test Tokens"]
+        L2["Example Keys"]
+        L3["Low Entropy"]
     end
 ```
 
@@ -419,16 +404,16 @@ graph LR
 
 ```mermaid
 flowchart TD
-    subgraph Optimizations
-        O1[Lazy Pattern Compile<br/>Once at load]
-        O2[Early Termination<br/>Skip binary/large]
-        O3[Parallel Processing<br/>ThreadPoolExecutor]
-        O4[Hash Deduplication<br/>O(1) lookup]
-        O5[Streaming Results<br/>Poll updates]
-        O6[Git Mirror Clone<br/>Minimal data]
+    subgraph Optimizations["Performance Optimizations"]
+        O1["Lazy Pattern Compile"]
+        O2["Early Termination"]
+        O3["Parallel Processing"]
+        O4["Hash Deduplication"]
+        O5["Streaming Results"]
+        O6["Git Mirror Clone"]
     end
 
-    O1 --> FAST[Faster Scans]
+    O1 --> FAST["Faster Scans"]
     O2 --> FAST
     O3 --> FAST
     O4 --> FAST
@@ -443,25 +428,25 @@ flowchart TD
 ```mermaid
 graph TD
     subgraph Unit["Unit Tests"]
-        U1[Pattern Matching]
-        U2[Entropy Calculation]
-        U3[URL Parsing]
-        U4[Secret Masking]
+        U1["Pattern Matching"]
+        U2["Entropy Calculation"]
+        U3["URL Parsing"]
+        U4["Secret Masking"]
     end
 
     subgraph Integration["Integration Tests"]
-        I1[Full Scan Flow]
-        I2[API Endpoints]
-        I3[Frontend-Backend]
+        I1["Full Scan Flow"]
+        I2["API Endpoints"]
+        I3["Frontend-Backend"]
     end
 
     subgraph E2E["End-to-End"]
-        E1[Test Repo Scan]
-        E2[UI Interactions]
-        E3[Result Verification]
+        E1["Test Repo Scan"]
+        E2["UI Interactions"]
+        E3["Result Verification"]
     end
 
-    TEST_REPO[Test Repository<br/>github.com/alamshoaib134/MY-TOKENS]
+    TEST_REPO["Test: github.com/alamshoaib134/MY-TOKENS"]
     
     Unit --> Integration --> E2E
     E2E --> TEST_REPO
@@ -520,24 +505,24 @@ classDiagram
 
 ---
 
-## 16. Request/Response Flow
+## 16. Request Response Flow
 
 ```mermaid
 flowchart LR
-    subgraph Request
-        R1[POST /api/scan]
-        R2[git_url: string]
+    subgraph Request["Request"]
+        R1["POST /api/scan"]
+        R2["git_url string"]
     end
 
-    subgraph Processing
-        P1[Validate URL]
-        P2[Generate scan_id]
-        P3[Start background scan]
+    subgraph Processing["Processing"]
+        P1["Validate URL"]
+        P2["Generate scan_id"]
+        P3["Start background scan"]
     end
 
-    subgraph Response
-        S1[scan_id: uuid]
-        S2[status: scanning]
+    subgraph Response["Response"]
+        S1["scan_id uuid"]
+        S2["status scanning"]
     end
 
     Request --> Processing --> Response
