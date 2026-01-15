@@ -1,20 +1,80 @@
 # 🔍 Git Secret Scanner
 
-A powerful full-stack application to scan Git repositories for exposed secrets, tokens, passwords, and confidential values across **all branches** and **entire commit history**.
+A powerful tool to scan Git repositories for exposed secrets, tokens, passwords, and confidential values. Offers **two scanning modes** for flexibility!
 
 ![Git Secret Scanner](https://img.shields.io/badge/Security-Secret%20Scanner-00d4ff?style=for-the-badge)
-![Python](https://img.shields.io/badge/Python-3.9+-00ff88?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-18-61dafb?style=for-the-badge)
+![Python](https://img.shields.io/badge/Python-3.11-00ff88?style=for-the-badge)
+
+## 🔥 Two Scanning Modes
+
+| Mode | Description | Use Case |
+|------|-------------|----------|
+| **🔥 Full Mode** | Python backend, clones repo, scans 500 commits | Deep scanning, deleted files, complete history |
+| **⚡ Lite Mode** | Browser-only, GitHub API | Quick scans, no backend needed |
 
 ## ✨ Features
 
-- 🌿 **Scan All Branches** - Automatically detects and scans every branch in the repository
-- 📜 **Full History Analysis** - Scans through entire git commit history, not just current HEAD
-- 🔐 **50+ Secret Patterns** - Detects AWS keys, API tokens, private keys, database credentials, and more
-- ⚡ **Fast & Efficient** - Background processing with real-time progress updates
-- 🎨 **Modern UI** - Beautiful cyberpunk-themed dark interface
-- 📊 **Severity Classification** - Categorizes findings as Critical, High, Medium, or Low
-- 🔒 **Safe Masking** - Secrets are automatically masked in the results
+### Full Mode (Python Backend)
+- 📚 Scans up to **500 commits**
+- 🗑️ Finds secrets in **deleted files**
+- 🌿 Scans **all branches**
+- 🔐 **50+ secret patterns**
+- 🔗 Supports GitHub, GitLab, Bitbucket, any Git URL
+
+### Lite Mode (Browser-Only)
+- ⚡ **Fast** - no backend needed
+- 🌐 Runs entirely in browser
+- 📜 Scans **20 commits** via GitHub API
+- 🔐 **40+ secret patterns**
+- 🔒 Privacy-first - no data leaves your browser
+
+## 🚀 Quick Start
+
+### Option 1: Full Mode (Recommended)
+
+**Terminal 1 - Backend:**
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+python app.py
+```
+
+**Terminal 2 - Frontend:**
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000` and select **🔥 Full Mode**!
+
+### Option 2: Lite Mode Only
+
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000` and select **⚡ Lite Mode** - no backend needed!
+
+## 🚢 Deployment
+
+### Frontend → Vercel
+
+```bash
+npm run build
+# Deploy dist/ folder to Vercel
+```
+
+Set environment variable: `VITE_BACKEND_URL=https://your-backend.railway.app`
+
+### Backend → Railway
+
+1. Create new Railway project
+2. Connect GitHub repo, select `backend/` folder
+3. Deploy!
 
 ## 🎯 What It Detects
 
@@ -23,162 +83,33 @@ A powerful full-stack application to scan Git repositories for exposed secrets, 
 | **Cloud Provider Keys** | AWS Access Keys, Azure Storage Keys, GCP API Keys |
 | **API Tokens** | GitHub, Slack, Stripe, SendGrid, Twilio, Discord |
 | **Private Keys** | RSA, OpenSSH, DSA, EC, PGP private keys |
-| **Database Credentials** | MongoDB, PostgreSQL, MySQL, Redis connection strings |
+| **Database Credentials** | MongoDB, PostgreSQL, MySQL, Redis URIs |
 | **Generic Secrets** | Passwords, API keys, tokens, auth headers, JWTs |
 
-## 🚀 Quick Start
+## 📁 Project Structure
 
-### Prerequisites
-
-- **Python 3.9+** with pip
-- **Node.js 18+** with npm
-- **Git** installed and available in PATH
-
-### 1. Clone & Setup Backend
-
-```bash
-cd Git_Scrapper/backend
-
-# Create virtual environment (recommended)
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Start the backend server
-python app.py
 ```
-
-The backend will run at `http://localhost:8000`
-
-### 2. Setup Frontend
-
-```bash
-cd Git_Scrapper/frontend
-
-# Install dependencies
-npm install
-
-# Start the development server
-npm run dev
-```
-
-The frontend will run at `http://localhost:3000`
-
-### 3. Use the Application
-
-1. Open `http://localhost:3000` in your browser
-2. Paste a public Git repository URL
-3. Click "Scan Repository"
-4. Wait for the scan to complete
-5. Review the findings with severity levels and details
-
-## 📡 API Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/scan` | POST | Start a new repository scan |
-| `/api/scan/{scan_id}` | GET | Get scan status and results |
-| `/api/health` | GET | Health check |
-
-### Example: Start a Scan
-
-```bash
-curl -X POST http://localhost:8000/api/scan \
-  -H "Content-Type: application/json" \
-  -d '{"git_url": "https://github.com/user/repo"}'
-```
-
-### Example: Check Status
-
-```bash
-curl http://localhost:8000/api/scan/{scan_id}
+Git_Scrapper/
+├── src/                    # React frontend
+│   ├── App.tsx             # Main component with mode selector
+│   ├── scanner.ts          # Lite mode (browser) scanner
+│   └── ...
+├── backend/                # Python backend (Full Mode)
+│   ├── app.py              # FastAPI server
+│   ├── requirements.txt
+│   └── Procfile            # Railway deployment
+├── package.json
+├── vercel.json
+└── README.md
 ```
 
 ## 🛡️ Security Notes
 
-- Only scan repositories you own or have permission to audit
-- Never scan repositories containing real production secrets without proper authorization
-- The scanner masks secrets in the output for safety
-- Results are stored in-memory only (not persisted to disk)
-
-## 🔧 Configuration
-
-### Adding Custom Patterns
-
-Edit `backend/app.py` and add patterns to the `SECRET_PATTERNS` list:
-
-```python
-SECRET_PATTERNS = [
-    # ... existing patterns ...
-    {
-        "name": "My Custom Token",
-        "pattern": r"my_token_[a-zA-Z0-9]{32}",
-        "severity": "high"
-    },
-]
-```
-
-### Severity Levels
-
-- **Critical** - Credentials that could lead to immediate compromise (AWS keys, private keys)
-- **High** - API keys and tokens with significant access
-- **Medium** - Tokens with limited scope or publishable keys
-- **Low** - Potentially sensitive but low-risk findings
-
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     React Frontend                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │
-│  │ URL Input    │  │ Progress UI  │  │ Results Display  │  │
-│  └──────────────┘  └──────────────┘  └──────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    FastAPI Backend                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │
-│  │ Clone Repo   │  │ Scan Engine  │  │ Pattern Matcher  │  │
-│  └──────────────┘  └──────────────┘  └──────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-```
-
-## 🚀 Deployment
-
-Since the scanning process can take several minutes (cloning repos, scanning history), a split deployment is recommended:
-
-### Frontend → Vercel
-
-1. Push your code to GitHub
-2. Import the `frontend` folder to Vercel
-3. Add environment variable:
-   - `VITE_API_URL` = `https://your-backend-url.railway.app`
-4. Deploy!
-
-### Backend → Railway (Recommended)
-
-1. Create a new Railway project
-2. Connect your GitHub repo, select `backend` folder
-3. Railway auto-detects Python and uses the `Procfile`
-4. Deploy!
-
-**Alternative backend hosts:** Render, Fly.io, DigitalOcean App Platform
-
-### Environment Variables
-
-| Variable | Location | Description |
-|----------|----------|-------------|
-| `VITE_API_URL` | Frontend (Vercel) | Backend API URL |
-| `PORT` | Backend (auto-set) | Server port (set automatically by host) |
+- **Full Mode**: Clones repos to temp directory, deleted after scan
+- **Lite Mode**: All data stays in browser, no external servers
+- Secrets are masked by default with reveal toggle
+- Only scan repos you own or have permission to audit
 
 ## 📝 License
 
 MIT License - Feel free to use, modify, and distribute.
-
-## ⚠️ Disclaimer
-
-This tool is for educational and authorized security testing purposes only. Always obtain proper authorization before scanning repositories. The authors are not responsible for any misuse of this tool.
-
