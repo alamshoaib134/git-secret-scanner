@@ -6,6 +6,28 @@ A powerful tool to scan Git repositories for exposed secrets, tokens, passwords,
 ![React](https://img.shields.io/badge/React-18-61dafb?style=for-the-badge)
 ![Python](https://img.shields.io/badge/Python-3.11-00ff88?style=for-the-badge)
 
+## 📸 Screenshots
+
+### Home Screen
+![Home Screen](screenshots/1-home.png)
+
+### Enter Repository URL
+![Enter URL](screenshots/2-url-entered.png)
+
+### Scan Results with Masked Secrets
+![Scan Results](screenshots/3-scan-results.png)
+
+### Reveal Full Secret
+![Secret Revealed](screenshots/4-secret-revealed.png)
+
+### Lite Mode (Browser-Only)
+![Lite Mode](screenshots/5-lite-mode.png)
+
+### Click to Open in GitHub (Line Highlighted)
+![GitHub Link](screenshots/6-github-link.png)
+
+---
+
 ## 🔥 Two Scanning Modes
 
 | Mode | Description | Use Case |
@@ -28,6 +50,13 @@ A powerful tool to scan Git repositories for exposed secrets, tokens, passwords,
 - 📜 Scans **20 commits** via GitHub API
 - 🔐 **40+ secret patterns**
 - 🔒 Privacy-first - no data leaves your browser
+
+### UI Features
+- 👁️ **Reveal/Mask Toggle** - View full secrets when needed
+- 🔗 **Clickable GitHub Links** - Click to open exact file & line on GitHub
+- 🎨 **Cyberpunk Theme** - Beautiful dark UI with neon accents
+- 📊 **Severity Classification** - Critical, High, Medium, Low
+- 🔍 **Filter by Severity/Type** - Find what matters
 
 ## 🚀 Quick Start
 
@@ -59,6 +88,13 @@ npm run dev
 
 Open `http://localhost:3000` and select **⚡ Lite Mode** - no backend needed!
 
+## 🧪 Test It Out
+
+Try scanning this test repository with intentional secrets:
+```
+https://github.com/alamshoaib134/MY-TOKENS
+```
+
 ## 🚢 Deployment
 
 ### Frontend → Vercel
@@ -89,7 +125,7 @@ Set environment variable: `VITE_BACKEND_URL=https://your-backend.railway.app`
 ## 📁 Project Structure
 
 ```
-Git_Scrapper/
+git-secret-scanner/
 ├── src/                    # React frontend
 │   ├── App.tsx             # Main component with mode selector
 │   ├── scanner.ts          # Lite mode (browser) scanner
@@ -98,6 +134,7 @@ Git_Scrapper/
 │   ├── app.py              # FastAPI server
 │   ├── requirements.txt
 │   └── Procfile            # Railway deployment
+├── screenshots/            # Demo screenshots
 ├── package.json
 ├── vercel.json
 └── README.md
@@ -113,3 +150,7 @@ Git_Scrapper/
 ## 📝 License
 
 MIT License - Feel free to use, modify, and distribute.
+
+## ⚠️ Disclaimer
+
+This tool is for educational and authorized security testing purposes only. Always obtain proper authorization before scanning repositories.
